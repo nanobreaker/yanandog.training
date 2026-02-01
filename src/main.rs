@@ -1,0 +1,57 @@
+use std::net::SocketAddr;
+
+use axum::{Router, routing::get};
+use listenfd::ListenFd;
+use maud::{DOCTYPE, Markup, html};
+use tokio::net::TcpListener;
+use tower_http::services::ServeDir;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+async fn base() -> Markup {
+    html! {
+        (DOCTYPE)
+        head {
+            title { "yanandog.training" }
+            meta charset="utf-8";
+            link rel="stylesheet" href ="/assets/style.css";
+            link rel="icon" type="image/x-icon" href="/assets/favicon.ico";
+            script src="/assets/htmx.js" { }
+        }
+        body {
+            h1 { "Hello my dear Echo and Yana!" }
+            p { "Let's get started right?!!!" }
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() {
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                format!("{}=debug,tower_http=debug", env!("CARGO_CRATE_NAME")).into()
+            }),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
+    let app = Router::new()
+        .route("/", get(base))
+        .nest_service("/assets", ServeDir::new("assets"));
+
+    let mut listenfd = ListenFd::from_env();
+    let listener = match listenfd.take_tcp_listener(0).unwrap() {
+        Some(listener) => {
+            listener.set_nonblocking(true).unwrap();
+            TcpListener::from_std(listener).unwrap()
+        }
+        None => TcpListener::bind(addr).await.unwrap(),
+    };
+
+    tracing::info!("listening on {}", addr);
+
+    axum::serve(listener, app.into_make_service())
+        .await
+        .unwrap();
+}
