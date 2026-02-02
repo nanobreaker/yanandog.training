@@ -13,6 +13,7 @@ async fn base() -> Markup {
         head {
             title { "yanandog.training" }
             meta charset="utf-8";
+            link rel="stylesheet" href ="/assets/missing.css";
             link rel="stylesheet" href ="/assets/style.css";
             link rel="icon" type="image/x-icon" href="/assets/favicon.ico";
             script src="/assets/htmx.js" { }
@@ -26,12 +27,11 @@ async fn base() -> Markup {
 
 #[tokio::main]
 async fn main() {
+    let env_filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| format!("{}=debug,tower_http=debug", env!("CARGO_CRATE_NAME")).into());
+
     tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                format!("{}=debug,tower_http=debug", env!("CARGO_CRATE_NAME")).into()
-            }),
-        )
+        .with(env_filter)
         .with(tracing_subscriber::fmt::layer())
         .init();
 
