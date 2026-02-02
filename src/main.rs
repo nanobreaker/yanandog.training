@@ -13,14 +13,28 @@ async fn base() -> Markup {
         head {
             title { "yanandog.training" }
             meta charset="utf-8";
+            meta name="color-scheme" content="light";
             link rel="stylesheet" href ="/assets/missing.css";
             link rel="stylesheet" href ="/assets/style.css";
             link rel="icon" type="image/x-icon" href="/assets/favicon.ico";
             script src="/assets/htmx.js" { }
         }
         body {
-            h1 { "Hello my dear Echo and Yana!" }
-            p { "Let's get started right?!!!" }
+            header {
+                h1 class="flex-row crowded" {
+                    img src="/assets/favicon.ico";
+                    span class="flex-column packed" {
+                        span class="allcaps" { "yana and dog(s)" }
+                        sub-title { "trainging and fun"}
+                    }
+                }
+            }
+            main {
+
+            }
+            footer {
+                p { "Made with <3" }
+            }
         }
     }
 }
