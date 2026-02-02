@@ -14,18 +14,18 @@ async fn base() -> Markup {
             title { "yanandog.training" }
             meta charset="utf-8";
             meta name="color-scheme" content="light";
-            link rel="stylesheet" href ="/assets/missing.css";
             link rel="stylesheet" href ="/assets/style.css";
             link rel="icon" type="image/x-icon" href="/assets/favicon.ico";
-            script src="/assets/htmx.js" { }
+            link rel="stylesheet" href="https://www.nerdfonts.com/assets/css/webfont.css";
+            link rel="stylesheet" href="https://unpkg.com/missing.css@1.2.0";
+            script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" { }
         }
         body {
             header {
                 h1 class="flex-row crowded" {
-                    img src="/assets/favicon.ico";
-                    span class="flex-column packed" {
-                        span class="allcaps" { "yana and dog(s)" }
-                        sub-title { "trainging and fun"}
+                    i class="<big> nf nf-md-dog" { }
+                    span class="<big> flex-column packed" {
+                        span class="allcaps" { "yanandog.training" }
                     }
                 }
             }
@@ -33,7 +33,11 @@ async fn base() -> Markup {
 
             }
             footer {
-                p { "Made with <3" }
+                p {
+                    "Made with "
+                    span class="nf nf-md-heart" { }
+                    " in Moldova"
+                }
             }
         }
     }
